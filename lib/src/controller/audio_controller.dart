@@ -1,8 +1,8 @@
 import 'dart:math';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:get/get.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:sangeet/src/views/filtered_songs.dart';
 import 'package:sangeet/src/widgets/show_message.dart';
 
 class AudioController extends GetxController {
@@ -13,6 +13,11 @@ class AudioController extends GetxController {
   var nowPlaying;
   bool _hasPermission = false;
   RxList allSongs = [].obs;
+  RxList albumList = [].obs;
+  RxList artistSongs = [].obs;
+  RxList playlist = [].obs;
+  RxList filteredSongs = [].obs;
+  RxList currentPlayingList = [].obs;
   int isPlayingIdx = 0;
   bool isRepeat = false; 
   bool isShuffle = false; 
@@ -30,17 +35,61 @@ class AudioController extends GetxController {
       retryRequest: retry,
     );
     if(_hasPermission) {
-      var data = await audioQuery.querySongs(
+      await getAllSongs();
+      await getAlbumList();
+      await getAertistList();
+      convertSecondsToDuration(nowPlaying.duration);
+      // duration = formatTime(time);
+    }
+  }
+
+  getAllSongs() async {
+    var data = await audioQuery.querySongs(
         sortType: SongSortType.TITLE,
         orderType: OrderType.ASC_OR_SMALLER,
         uriType: UriType.EXTERNAL,
         ignoreCase: true
       );
-      allSongs(data);
-      nowPlaying = data[0];
-      convertSecondsToDuration(nowPlaying.duration);
-      // duration = formatTime(time);
+    allSongs(data);
+    currentPlayingList(allSongs);
+    nowPlaying = currentPlayingList[0];
+  }
+
+  getAlbumList() async {
+    var data = await audioQuery.queryAlbums(
+        sortType: AlbumSortType.ALBUM,
+        orderType: OrderType.ASC_OR_SMALLER,
+        // uriType: UriType.EXTERNAL,
+        ignoreCase: true
+      );
+    albumList(data);
+  }
+
+  getAertistList() async {
+    var data = await audioQuery.queryArtists(
+        sortType: ArtistSortType.ARTIST,
+        orderType: OrderType.ASC_OR_SMALLER,
+        uriType: UriType.EXTERNAL,
+        ignoreCase: true
+      );
+    artistSongs(data);
+  }
+
+  getFilteredSongs(type, albumId, artistId, name) async {
+    var songs = [];
+    for(var item in allSongs) {
+      if(type == 'album') {                   // for albums
+        if(item.albumId == albumId && item.artistId == artistId && item.isMusic) {
+          songs.add(item);
+        }
+      } else if(type == 'artist') {
+        if(item.artistId == artistId && item.isMusic) {
+          songs.add(item);
+        }
+      }
     }
+    filteredSongs(songs);
+    Get.to(() => const FilteredSongs(), arguments: name);
   }
 
   playSong() async {
@@ -69,7 +118,7 @@ class AudioController extends GetxController {
   }
 
   addToNowPlaying(idx) {
-    nowPlaying = allSongs[idx];
+    nowPlaying = currentPlayingList[idx];
     isPlayingIdx = idx;
     playSong();
   }
@@ -77,7 +126,7 @@ class AudioController extends GetxController {
   prevSong() {
     if(isPlayingIdx >= 0) {
       isPlayingIdx = isPlayingIdx - 1;
-      nowPlaying = allSongs[isPlayingIdx];
+      nowPlaying = currentPlayingList[isPlayingIdx];
       playSong();
     } else {
       showMessage('There is the first song');
@@ -111,9 +160,9 @@ class AudioController extends GetxController {
     if(isShuffle) {
       shuffledList();
     } else {
-      if(isPlayingIdx < allSongs.length) {
+      if(isPlayingIdx < currentPlayingList.length) {
         isPlayingIdx = isPlayingIdx + 1;
-        nowPlaying = allSongs[isPlayingIdx];
+        nowPlaying = currentPlayingList[isPlayingIdx];
         playSong();
       } else {
         showMessage('There are no more songs');
@@ -123,9 +172,9 @@ class AudioController extends GetxController {
   }
 
   shuffledList() async {
-    var randomSongIdx = Random().nextInt(allSongs.length + 1);
+    var randomSongIdx = Random().nextInt(currentPlayingList.length + 1);
     isPlayingIdx = randomSongIdx;
-    nowPlaying = allSongs[randomSongIdx];
+    nowPlaying = currentPlayingList[randomSongIdx];
     playSong();
 
     // var random = Random();

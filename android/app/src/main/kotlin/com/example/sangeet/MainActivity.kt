@@ -1,4 +1,4 @@
-package com.example.sangeet
+package com.trend74x.sangeet
 
 import io.flutter.embedding.android.FlutterActivity
 

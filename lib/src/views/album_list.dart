@@ -3,14 +3,14 @@ import 'package:get/get.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:sangeet/src/controller/audio_controller.dart';
 
-class AllMusic extends StatefulWidget {
-  const AllMusic({super.key});
+class AlbumList extends StatefulWidget {
+  const AlbumList({super.key});
 
   @override
-  State<AllMusic> createState() => _AllMusicState();
+  State<AlbumList> createState() => _AlbumListState();
 }
 
-class _AllMusicState extends State<AllMusic> {
+class _AlbumListState extends State<AlbumList> {
 
   final AudioController _con = Get.put(AudioController());
 
@@ -19,26 +19,26 @@ class _AllMusicState extends State<AllMusic> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Obx(() => 
-          _con.allSongs.isEmpty
+          _con.albumList.isEmpty
             ? const Center(child: Text('Songs not imported'))
-            : allsongsList()
+            : albumsList()
         ),
       )
     );
   }
 
-  allsongsList() {
+  albumsList() {
     return ListView.separated(
-      itemCount: _con.allSongs.length,
+      itemCount: _con.albumList.length,
       shrinkWrap: true,
       separatorBuilder: (context, index) => const Divider(),
       physics: const ClampingScrollPhysics(),
       itemBuilder: (context, index) {
         return ListTile(
-          tileColor: _con.nowPlaying.id == _con.allSongs[index].id ? Theme.of(context).primaryColor : Theme.of(context).scaffoldBackgroundColor,
+          tileColor: Theme.of(context).scaffoldBackgroundColor,
           leading:  QueryArtworkWidget(
             controller: _con.audioQuery,
-            id: _con.allSongs[index].id,
+            id: _con.albumList[index].id,
             type: ArtworkType.AUDIO,
             nullArtworkWidget: const Image(
               image: AssetImage('assets/images/appIcon.png'),
@@ -49,26 +49,29 @@ class _AllMusicState extends State<AllMusic> {
           title: SizedBox(
             width: MediaQuery.of(context).size.width * 0.75,
             child: Text(
-              _con.allSongs[index].title,
+              _con.albumList[index].album,
               overflow: TextOverflow.ellipsis
             )
           ),
           subtitle: Row(
             children: [
-              Row(
-                children: [
-                  const Icon(
-                    Icons.person,
-                    size: 18
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.3,
-                    child: Text(
-                      ' ${_con.allSongs[index].artist}',
-                      overflow: TextOverflow.ellipsis
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.5,
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.person,
+                      size: 18
                     ),
-                  ),
-                ],
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.35,
+                      child: Text(
+                        ' ${_con.albumList[index].artist}',
+                        overflow: TextOverflow.ellipsis
+                      ),
+                    ),
+                  ],
+                ),
               ),
               Row(
                 children: [
@@ -76,20 +79,16 @@ class _AllMusicState extends State<AllMusic> {
                     Icons.album,
                     size: 18
                   ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.3,
-                    child: Text(
-                      ' ${_con.allSongs[index].album}',
-                      overflow: TextOverflow.ellipsis
-                    ),
+                  Text(
+                    ' ${_con.albumList[index].numOfSongs}',
+                    overflow: TextOverflow.ellipsis
                   ),
                 ],
               ),
             ],
           ),
           onTap: () {
-            _con.currentPlayingList(_con.allSongs);
-            _con.addToNowPlaying(index);
+            _con.getFilteredSongs('album' , _con.albumList[index].id, _con.albumList[index].artistId, _con.albumList[index].album);
             setState(() { });
           },
         );

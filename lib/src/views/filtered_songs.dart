@@ -3,24 +3,31 @@ import 'package:get/get.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:sangeet/src/controller/audio_controller.dart';
 
-class AllMusic extends StatefulWidget {
-  const AllMusic({super.key});
+class FilteredSongs extends StatefulWidget {
+  const FilteredSongs({super.key});
 
   @override
-  State<AllMusic> createState() => _AllMusicState();
+  State<FilteredSongs> createState() => _FilteredSongsState();
 }
 
-class _AllMusicState extends State<AllMusic> {
+class _FilteredSongsState extends State<FilteredSongs> {
 
   final AudioController _con = Get.put(AudioController());
+  var args = Get.arguments;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(args),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+      ),
       body: SingleChildScrollView(
         child: Obx(() => 
-          _con.allSongs.isEmpty
-            ? const Center(child: Text('Songs not imported'))
+          _con.filteredSongs.isEmpty
+            ? const Center(child: Text('No Songs'))
             : allsongsList()
         ),
       )
@@ -29,16 +36,16 @@ class _AllMusicState extends State<AllMusic> {
 
   allsongsList() {
     return ListView.separated(
-      itemCount: _con.allSongs.length,
+      itemCount: _con.filteredSongs.length,
       shrinkWrap: true,
       separatorBuilder: (context, index) => const Divider(),
       physics: const ClampingScrollPhysics(),
       itemBuilder: (context, index) {
         return ListTile(
-          tileColor: _con.nowPlaying.id == _con.allSongs[index].id ? Theme.of(context).primaryColor : Theme.of(context).scaffoldBackgroundColor,
+          tileColor: _con.nowPlaying.id == _con.filteredSongs[index].id ? Theme.of(context).primaryColor : Theme.of(context).scaffoldBackgroundColor,
           leading:  QueryArtworkWidget(
             controller: _con.audioQuery,
-            id: _con.allSongs[index].id,
+            id: _con.filteredSongs[index].id,
             type: ArtworkType.AUDIO,
             nullArtworkWidget: const Image(
               image: AssetImage('assets/images/appIcon.png'),
@@ -49,7 +56,7 @@ class _AllMusicState extends State<AllMusic> {
           title: SizedBox(
             width: MediaQuery.of(context).size.width * 0.75,
             child: Text(
-              _con.allSongs[index].title,
+              _con.filteredSongs[index].title,
               overflow: TextOverflow.ellipsis
             )
           ),
@@ -64,7 +71,7 @@ class _AllMusicState extends State<AllMusic> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.3,
                     child: Text(
-                      ' ${_con.allSongs[index].artist}',
+                      ' ${_con.filteredSongs[index].artist}',
                       overflow: TextOverflow.ellipsis
                     ),
                   ),
@@ -79,7 +86,7 @@ class _AllMusicState extends State<AllMusic> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.3,
                     child: Text(
-                      ' ${_con.allSongs[index].album}',
+                      ' ${_con.filteredSongs[index].album}',
                       overflow: TextOverflow.ellipsis
                     ),
                   ),
@@ -88,7 +95,7 @@ class _AllMusicState extends State<AllMusic> {
             ],
           ),
           onTap: () {
-            _con.currentPlayingList(_con.allSongs);
+            _con.currentPlayingList(_con.filteredSongs);
             _con.addToNowPlaying(index);
             setState(() { });
           },

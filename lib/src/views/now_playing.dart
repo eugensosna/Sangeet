@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:marquee/marquee.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:sangeet/src/controller/audio_controller.dart';
+// import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class NowPlaying extends StatefulWidget {
   const NowPlaying({super.key});
@@ -13,10 +14,11 @@ class NowPlaying extends StatefulWidget {
 
 class _NowPlayingState extends State<NowPlaying> {
   final AudioController _con = Get.put(AudioController());
-  
+  // final AdController _adCon = Get.put(AdController());
 
   @override
   void initState() {
+    // _adCon.loadBannerAd();
     super.initState();
 
     //Listen to audio duration
@@ -53,30 +55,54 @@ class _NowPlayingState extends State<NowPlaying> {
   //   super.dispose();
   // }
 
+  // loadAd() {
+  //   return Obx(() =>
+  //     _adCon.isAdLoaded.value == false
+  //       ? const SizedBox()
+  //       : _adCon.bannerAd == null
+  //         ? const SizedBox()
+  //         : Align(
+  //           alignment: Alignment.bottomCenter,
+  //           child: SafeArea(
+  //             child: SizedBox(
+  //               width: _adCon.bannerAd!.size.width.toDouble(),
+  //               height: _adCon.bannerAd!.size.height.toDouble(),
+  //               child: AdWidget(ad: _adCon.bannerAd!),
+  //             ),
+  //           ),
+  //         )
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Stack(
           children: [
-            const Text(
-              'Now Playing',
-              style: TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  'Now Playing',
+                  style: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
+                SizedBox(height: size.height * 0.05),
+                albumArt(),
+                SizedBox(height: size.height * 0.05),
+                songTitle(),
+                SizedBox(height: size.height * 0.015),
+                slider(),
+                SizedBox(height: size.height * 0.025),
+                btnControls(),
+              ],
             ),
-            SizedBox(height: size.height * 0.05),
-            albumArt(),
-            SizedBox(height: size.height * 0.05),
-            songTitle(),
-            SizedBox(height: size.height * 0.015),
-            slider(),
-            SizedBox(height: size.height * 0.025),
-            btnControls(),
+            // loadAd(),
           ],
         ),
       ),

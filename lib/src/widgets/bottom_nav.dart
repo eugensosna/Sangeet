@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:sangeet/src/controller/audio_controller.dart';
-import 'package:sangeet/src/views/all_music.dart';
+import 'package:sangeet/src/views/music_list_tab.dart';
 import 'package:sangeet/src/views/now_playing.dart';
 
 class BottomNavigation extends StatefulWidget {
@@ -12,13 +10,13 @@ class BottomNavigation extends StatefulWidget {
 }
 
 class _BottomNavigationState extends State<BottomNavigation> with WidgetsBindingObserver{
-  final AudioController _con = Get.put(AudioController());
+  // final AudioController _con = Get.put(AudioController());
 
   int _curIdx = 0;
 
   static final List<Widget> _pages = <Widget>[
     const NowPlaying(),
-    const AllMusic(),
+    const MusicListTab()
   ];
 
   void _onItemTapped(int index) {
@@ -30,21 +28,21 @@ class _BottomNavigationState extends State<BottomNavigation> with WidgetsBinding
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    // WidgetsBinding.instance.addObserver(this);
   }
 
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   WidgetsBinding.instance.removeObserver(this);
+  //   super.dispose();
+  // }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if(state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {     // pausing audio when app is minimized
-      _con.pauseSong(); 
-    }
-  }
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) {
+  //   if(state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {     // pausing audio when app is minimized
+  //     // _con.pauseSong(); 
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
