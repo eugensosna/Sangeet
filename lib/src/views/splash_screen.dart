@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 // import 'package:sangeet/src/controller/ad_controller.dart';
 import 'package:sangeet/src/controller/audio_controller.dart';
 import 'package:sangeet/src/widgets/bottom_nav.dart';
+import 'package:sangeet/src/widgets/cache_storage.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -14,18 +14,17 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final box = GetStorage();
   final AudioController _con = Get.put(AudioController());
   // final AdController _adCon = Get.put(AdController());
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if(box.read('isDarkMode') == null) {
-        box.write('isDarkMode', Get.isDarkMode);
+      if(read('isDarkMode') == null) {
+        write('isDarkMode', Get.isDarkMode);
       } else {
         Get.changeThemeMode(
-          box.read('isDarkMode') ? ThemeMode.dark : ThemeMode.light
+          read('isDarkMode') ? ThemeMode.dark : ThemeMode.light
         );
       }
     });

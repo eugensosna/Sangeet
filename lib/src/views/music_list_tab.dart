@@ -1,7 +1,14 @@
+// ignore_for_file: dead_code, null_check_always_fails
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:on_audio_query/on_audio_query.dart';
+import 'package:sangeet/src/controller/audio_controller.dart';
 import 'package:sangeet/src/views/album_list.dart';
 import 'package:sangeet/src/views/all_music.dart';
 import 'package:sangeet/src/views/artist_list.dart';
+import 'package:sangeet/src/widgets/bottom_nav.dart';
+// import 'package:sangeet/src/views/playlist.dart';
 
 class MusicListTab extends StatefulWidget {
   const MusicListTab({super.key});
@@ -13,10 +20,11 @@ class MusicListTab extends StatefulWidget {
 class _MusicListTabState extends State<MusicListTab>  with SingleTickerProviderStateMixin{
 
   late final TabController _tabController;
+  final AudioController _con = Get.put(AudioController());
 
   @override
   void initState() {
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(() { 
       setState(() {});
     });
@@ -64,28 +72,116 @@ class _MusicListTabState extends State<MusicListTab>  with SingleTickerProviderS
           text: "Artists",
           height: 40,
         ),
-        Tab(
-          text: "PlayList",
-          height: 40,
-        ),
+        // Tab(
+        //   text: "PlayList",
+        //   height: 40,
+        // ),
       ],
     );
   }
 
   tabBarView() {
-    return TabBarView(
-      controller: _tabController,
-      children: const [
-        AllMusic(),
-        AlbumList(),
-        ArtistList(),
-        SizedBox(
-          height: 500.0,
-          child: Center(child: Text('Playlist is under construction. \n Thanks for your patience'))
+    return Stack(
+      children: [
+        Obx(() => 
+          SizedBox(
+            height: _con.isPlaying.value == false ? null : MediaQuery.of(context).size.height * 0.75 ,
+            child: TabBarView(
+              controller: _tabController,
+              children: const [
+                AllMusic(),
+                AlbumList(),
+                ArtistList(),
+                // PlayList()
+              ],
+            ),
+          ),
         ),
+        Positioned(
+          bottom: 0.0,
+          child: Container(
+            height: 73.0,
+            width: MediaQuery.of(context).size.width,
+            color: Colors.red,
+            child: nowPlayingSongSnippet(),
+          ),
+        )
       ],
     );
   }
 
+  nowPlayingSongSnippet() {
+    return InkWell(
+      onTap: () => Get.to(() => const BottomNavigation()),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            QueryArtworkWidget(
+              controller: _con.audioQuery,
+              id: _con.nowPlaying.id,
+              type: ArtworkType.AUDIO,
+              nullArtworkWidget: const Image(
+                image: AssetImage('assets/images/appIcon.png'),
+                width: 40.0,
+                height: 40.0,
+              )
+            ),
+            const SizedBox(width: 8.0),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  child: Text(
+                    _con.nowPlaying.title,
+                    maxLines: 2,
+                    style: const TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold
+                    ),
+                  )
+                ),
+                Text(_con.nowPlaying.artist),
+              ],
+            ),
+            const Spacer(),
+            InkWell(
+              onTap: () {
+                _con.isPlaying.value
+                  ? _con.pauseSong()
+                  : _con.playSong();
+                setState(() { });
+              },
+              child: CircleAvatar(
+                radius: 20.0,
+                child: Icon(
+                  _con.isPlaying.value
+                    ? Icons.pause
+                    : Icons.play_arrow,
+                  size: 30.0,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8.0),
+            InkWell(
+              onTap: () {
+                _con.nextSong();
+                setState(() { });
+              },
+              child: const CircleAvatar(
+                radius: 20.0,
+                child: Icon(
+                  Icons.skip_next,
+                  size: 30.0,
+                ),
+              ),
+            ),
+            const SizedBox(width: 4.0),
+          ],
+        ),
+      ),
+    );
+  }
 
 }

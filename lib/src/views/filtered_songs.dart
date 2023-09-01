@@ -95,7 +95,7 @@ class _FilteredSongsState extends State<FilteredSongs> {
             ],
           ),
           onTap: () {
-            _con.currentPlayingList(_con.filteredSongs);
+            _con.currentPlayingList(_con.filteredSongs as List<SongModel>?);
             _con.addToNowPlaying(index);
             setState(() { });
           },

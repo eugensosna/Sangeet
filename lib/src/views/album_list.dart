@@ -39,7 +39,7 @@ class _AlbumListState extends State<AlbumList> {
           leading:  QueryArtworkWidget(
             controller: _con.audioQuery,
             id: _con.albumList[index].id,
-            type: ArtworkType.AUDIO,
+            type: ArtworkType.ALBUM,
             nullArtworkWidget: const Image(
               image: AssetImage('assets/images/appIcon.png'),
               width: 40.0,

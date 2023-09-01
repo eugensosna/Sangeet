@@ -37,10 +37,11 @@ dependencies:
   cupertino_icons: ^1.0.2
   get: ^4.6.5
   get_storage: ^2.1.1
-  on_audio_query: ^2.7.0
+  on_audio_query: ^2.9.0
   audioplayers: ^4.0.1
   marquee: ^2.2.3
   fluttertoast: ^8.2.1
+  permission_handler: ^10.4.3
 
   # google_mobile_ads: ^3.0.0
 

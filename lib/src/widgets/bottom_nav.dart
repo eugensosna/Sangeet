@@ -3,7 +3,8 @@ import 'package:sangeet/src/views/music_list_tab.dart';
 import 'package:sangeet/src/views/now_playing.dart';
 
 class BottomNavigation extends StatefulWidget {
-  const BottomNavigation({super.key});
+  final int index;
+  const BottomNavigation({super.key, this.index = 0});
 
   @override
   State<BottomNavigation> createState() => _BottomNavigationState();
@@ -27,6 +28,7 @@ class _BottomNavigationState extends State<BottomNavigation> with WidgetsBinding
 
   @override
   void initState() {
+    _curIdx =  widget.index;
     super.initState();
     // WidgetsBinding.instance.addObserver(this);
   }

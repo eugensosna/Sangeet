@@ -1,8 +1,13 @@
+// ignore_for_file: null_check_always_fails, dead_code
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:marquee/marquee.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sangeet/src/controller/audio_controller.dart';
+import 'package:sangeet/src/views/splash_screen.dart';
+import 'package:sangeet/src/widgets/custom_button.dart';
 // import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class NowPlaying extends StatefulWidget {
@@ -41,10 +46,13 @@ class _NowPlayingState extends State<NowPlaying> {
 
     //on song complete
     _con.audioPlayer.onPlayerComplete.listen((event) {
-      _con.isShuffle
-        ? _con.shuffledList()
-        : _con.nextSong();
-      if(mounted) setState(() { });
+      if(_con.audioPlayer.state == PlayerState.completed) {
+        _con.isShuffle
+          ? _con.shuffledList()
+          : _con.nextSong();
+        if(mounted) { }
+        setState(() { });
+      }
     });
 
   }
@@ -82,27 +90,56 @@ class _NowPlayingState extends State<NowPlaying> {
         padding: const EdgeInsets.all(20.0),
         child: Stack(
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text(
-                  'Now Playing',
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold
+            _con.nowPlaying == null
+              ? Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    width: 500.0,
+                    child: Text(
+                      'You need to give permission to storage to access the music.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16.0
+                      ),
+                    ),
                   ),
-                ),
-                SizedBox(height: size.height * 0.05),
-                albumArt(),
-                SizedBox(height: size.height * 0.05),
-                songTitle(),
-                SizedBox(height: size.height * 0.015),
-                slider(),
-                SizedBox(height: size.height * 0.025),
-                btnControls(),
-              ],
-            ),
-            // loadAd(),
+                  const SizedBox(height: 8.0),
+                  CustomButton(
+                    text: 'Retry', 
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    onPressed: () async {
+                      await openAppSettings();
+                      Get.offAll(() => const SplashScreen());
+                    }
+                  )
+                ],
+              )
+              : Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Now Playing',
+                    style: TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  SizedBox(height: size.height * 0.05),
+                  albumArt(),
+                  SizedBox(height: size.height * 0.05),
+                  songTitle(),
+                  SizedBox(height: size.height * 0.015),
+                  slider(),
+                  SizedBox(height: size.height * 0.025),
+                  btnControls()
+                  ,
+                ],
+              ),
+              // loadAd(),
           ],
         ),
       ),
@@ -136,7 +173,7 @@ class _NowPlayingState extends State<NowPlaying> {
             text: _con.nowPlaying.title,
             scrollAxis: Axis.horizontal,
             crossAxisAlignment: CrossAxisAlignment.start,
-            blankSpace: 20.0,
+            blankSpace: 200.0,
             velocity: 100.0,
             pauseAfterRound: const Duration(seconds: 1),
             startPadding: 10.0,
@@ -193,6 +230,7 @@ class _NowPlayingState extends State<NowPlaying> {
             value: _con.position.inSeconds.toDouble(),
             onChanged: (val) async {
               final position = Duration(seconds: val.toInt());
+              setState(() { });
               await _con.audioPlayer.seek(position);
               await _con.resumeSong();
             }
