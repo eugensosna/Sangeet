@@ -101,7 +101,7 @@ class AudioController extends GetxController {
     playlist(data);
   }
 
-  getFilteredSongs(type, albumId, artistId, name) async {
+  getFilteredSongs(type, albumId, artistId, name) {
     var songs = [];
     for(var item in allSongs) {
       if(type == 'album') {                   // for albums
@@ -118,7 +118,7 @@ class AudioController extends GetxController {
     Get.to(() => const FilteredSongs(), arguments: name);
   }
 
-  playSong() async {
+  playSong() {
     try {
       convertSecondsToDuration(nowPlaying.duration);
       audioPlayer.play(DeviceFileSource(nowPlaying.data));
@@ -131,7 +131,7 @@ class AudioController extends GetxController {
     }
   }
 
-  pauseSong() async {
+  pauseSong() {
     try {
       audioPlayer.pause();
       isPlaying(false);
@@ -140,9 +140,9 @@ class AudioController extends GetxController {
     }
   }
 
-  resumeSong() async {
+  resumeSong() {
     duration = convertSecondsToDuration(nowPlaying.duration);
-    await audioPlayer.resume();
+    audioPlayer.resume();
     isPlaying(true);
   }
 
@@ -158,35 +158,13 @@ class AudioController extends GetxController {
   }
 
   prevSong() {
-    if(isPlayingIdx.value >= 0) {
+    if(isPlayingIdx.value > 0) {
       isPlayingIdx(isPlayingIdx.value - 1);
       nowPlaying = currentPlayingList[isPlayingIdx.value];
       playSong();
     } else {
       showMessage('This is the first song.');
       isPlaying(false);
-    }
-  }
-
-  songLoop() async {
-    if(isRepeat == false) {
-      await audioPlayer.setReleaseMode(ReleaseMode.loop);
-      isRepeat = true;
-      showMessage('Repeat this song');
-    } else {
-      await audioPlayer.setReleaseMode(ReleaseMode.release);
-      isRepeat = false;
-      showMessage('Repeat turned off');
-    }
-  }
-
-  songShuffle() async {
-    if(isShuffle == false) {
-      isShuffle = true;
-      showMessage('Shuffle is on');
-    } else {
-      isShuffle = false;
-      showMessage('Shuffle off');
     }
   }
 
@@ -205,7 +183,30 @@ class AudioController extends GetxController {
     }
   }
 
-  shuffledList() async {
+  songLoop() async {
+    if(isRepeat == false) {
+      await audioPlayer.setReleaseMode(ReleaseMode.loop);
+      isRepeat = true;
+      showMessage('Repeat this song');
+    } else {
+      await audioPlayer.setReleaseMode(ReleaseMode.release);
+      isRepeat = false;
+      showMessage('Repeat turned off');
+    }
+  }
+
+  songShuffle() {
+    if(isShuffle == false) {
+      isShuffle = true;
+      showMessage('Shuffle is on');
+    } else {
+      isShuffle = false;
+      showMessage('Shuffle off');
+    }
+  }
+
+
+  shuffledList() {
     var randomSongIdx = Random().nextInt(currentPlayingList.length + 1);
     isPlayingIdx(randomSongIdx);
     nowPlaying = currentPlayingList[randomSongIdx];

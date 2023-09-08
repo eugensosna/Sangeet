@@ -115,71 +115,73 @@ class _MusicListTabState extends State<MusicListTab>  with SingleTickerProviderS
       onTap: () => Get.to(() => const BottomNavigation()),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            QueryArtworkWidget(
-              controller: _con.audioQuery,
-              id: _con.nowPlaying.id,
-              type: ArtworkType.AUDIO,
-              nullArtworkWidget: const Image(
-                image: AssetImage('assets/images/appIcon.png'),
-                width: 40.0,
-                height: 40.0,
-              )
-            ),
-            const SizedBox(width: 8.0),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.5,
-                  child: Text(
-                    _con.nowPlaying.title,
-                    maxLines: 2,
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold
-                    ),
-                  )
-                ),
-                Text(_con.nowPlaying.artist),
-              ],
-            ),
-            const Spacer(),
-            InkWell(
-              onTap: () {
-                _con.isPlaying.value
-                  ? _con.pauseSong()
-                  : _con.playSong();
-                setState(() { });
-              },
-              child: CircleAvatar(
-                radius: 20.0,
-                child: Icon(
+        child: Obx(() =>
+          Row(
+            children: [
+              QueryArtworkWidget(
+                controller: _con.audioQuery,
+                id: _con.isPlayingId.value,
+                type: ArtworkType.AUDIO,
+                nullArtworkWidget: const Image(
+                  image: AssetImage('assets/images/appIcon.png'),
+                  width: 40.0,
+                  height: 40.0,
+                )
+              ),
+              const SizedBox(width: 8.0),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    child: Text(
+                      _con.nowPlaying.title,
+                      maxLines: 2,
+                      style: const TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold
+                      ),
+                    )
+                  ),
+                  Text(_con.nowPlaying.artist),
+                ],
+              ),
+              const Spacer(),
+              InkWell(
+                onTap: () {
                   _con.isPlaying.value
-                    ? Icons.pause
-                    : Icons.play_arrow,
-                  size: 30.0,
+                    ? _con.pauseSong()
+                    : _con.playSong();
+                  setState(() { });
+                },
+                child: CircleAvatar(
+                  radius: 20.0,
+                  child: Icon(
+                    _con.isPlaying.value
+                      ? Icons.pause
+                      : Icons.play_arrow,
+                    size: 30.0,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(width: 8.0),
-            InkWell(
-              onTap: () {
-                _con.nextSong();
-                setState(() { });
-              },
-              child: const CircleAvatar(
-                radius: 20.0,
-                child: Icon(
-                  Icons.skip_next,
-                  size: 30.0,
+              const SizedBox(width: 8.0),
+              InkWell(
+                onTap: () {
+                  _con.nextSong();
+                  setState(() { });
+                },
+                child: const CircleAvatar(
+                  radius: 20.0,
+                  child: Icon(
+                    Icons.skip_next,
+                    size: 30.0,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(width: 4.0),
-          ],
-        ),
+              const SizedBox(width: 4.0),
+            ],
+          ),
+        )
       ),
     );
   }

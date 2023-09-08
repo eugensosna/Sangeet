@@ -1,4 +1,4 @@
-// ignore_for_file: null_check_always_fails, dead_code
+import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,6 +20,7 @@ class NowPlaying extends StatefulWidget {
 class _NowPlayingState extends State<NowPlaying> {
   final AudioController _con = Get.put(AudioController());
   // final AdController _adCon = Get.put(AdController());
+  Completer<void> audioCompletionCompleter = Completer<void>();
 
   @override
   void initState() {
@@ -47,11 +48,15 @@ class _NowPlayingState extends State<NowPlaying> {
     //on song complete
     _con.audioPlayer.onPlayerComplete.listen((event) {
       if(_con.audioPlayer.state == PlayerState.completed) {
-        _con.isShuffle
-          ? _con.shuffledList()
-          : _con.nextSong();
-        if(mounted) { }
-        setState(() { });
+        if (!audioCompletionCompleter.isCompleted) { // Check if it's not completed
+          audioCompletionCompleter.complete(); // Complete the custom future.
+          _con.isShuffle
+            ? _con.shuffledList()
+            : _con.nextSong();
+        }
+        if(mounted) {
+          setState(() { });
+        }
       }
     });
 
@@ -185,7 +190,7 @@ class _NowPlayingState extends State<NowPlaying> {
               fontWeight: FontWeight.bold,
               fontSize: 24.0,
               color: Get.isDarkMode ? Colors.white : Colors.black
-            ),
+            )
           ),
         ),
         Row(
