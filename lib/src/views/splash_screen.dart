@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import 'package:sangeet/src/controller/ad_controller.dart';
 import 'package:sangeet/src/controller/audio_controller.dart';
 import 'package:sangeet/src/widgets/cache_storage.dart';
 
@@ -14,7 +13,6 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   final AudioController _con = Get.put(AudioController());
-  // final AdController _adCon = Get.put(AdController());
 
   @override
   void initState() {
@@ -28,9 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
         isDarkMode ? ThemeMode.dark : ThemeMode.light
       );
     });
-    // _con.getAllFiles();
     super.initState();
-    // _adCon.loadBannerAd();
     Timer(
       const Duration(seconds: 3),
       () => _con.getAllFiles()
