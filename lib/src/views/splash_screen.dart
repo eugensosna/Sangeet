@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 // import 'package:sangeet/src/controller/ad_controller.dart';
 import 'package:sangeet/src/controller/audio_controller.dart';
-import 'package:sangeet/src/widgets/bottom_nav.dart';
 import 'package:sangeet/src/widgets/cache_storage.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -20,21 +19,28 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if(read('isDarkMode') == null) {
-        write('isDarkMode', Get.isDarkMode);
-      } else {
-        Get.changeThemeMode(
-          read('isDarkMode') ? ThemeMode.dark : ThemeMode.light
-        );
-      }
+      bool isDarkMode = read('isDarkMode') == null || read('isDarkMode') == '' 
+                          ? defaultDarkMode()
+                          : read('isDarkMode') == true
+                            ? true
+                            : false;
+      Get.changeThemeMode(
+        isDarkMode ? ThemeMode.dark : ThemeMode.light
+      );
     });
-    _con.getAllFiles();
+    // _con.getAllFiles();
     super.initState();
     // _adCon.loadBannerAd();
     Timer(
       const Duration(seconds: 3),
-      () => Get.off(() => const BottomNavigation())
+      () => _con.getAllFiles()
+      // Get.off(() => const BottomNavigation())
     );
+  }
+
+  defaultDarkMode() {
+    write('isDarkMode', Get.isDarkMode);
+    return true;
   }
 
   @override

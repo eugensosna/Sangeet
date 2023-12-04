@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:get/get.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:sangeet/src/views/filtered_songs.dart';
+import 'package:sangeet/src/widgets/bottom_nav.dart';
 import 'package:sangeet/src/widgets/cache_storage.dart';
 import 'package:sangeet/src/widgets/show_message.dart';
 
@@ -26,6 +28,7 @@ class AudioController extends GetxController {
   RxBool isPlaying = false.obs;
   Duration duration = Duration.zero;
   Duration position = Duration.zero;
+  
 
   getAllFiles() {
     checkAndRequestPermissions();
@@ -42,8 +45,12 @@ class AudioController extends GetxController {
       await getArtistList();
       await getPlayList();
       convertSecondsToDuration(nowPlaying.duration);
+      Get.off(() => const BottomNavigation());
       // duration = formatTime(time);
     }
+    //  else {
+    //   checkAndRequestPermissions();
+    // }
   }
 
   getAllSongs() async {
@@ -65,9 +72,10 @@ class AudioController extends GetxController {
                               SongModel(songsData)
                             ).toList();
       currentPlayingList = RxList<dynamic>(songs);
-    } else {
-      currentPlayingList = allSongs;
-    }
+    } 
+    // else {
+    //   await openAppSettings();
+    // }
     isPlayingIdx(read('isPlayingIdx') == '' ? 0 : read('isPlayingIdx'));
   }
 
@@ -239,6 +247,16 @@ class AudioController extends GetxController {
       WithFiltersType.AUDIOS
     );
     allSongs(results.toSongModel());
+  }
+
+  Function debounce(Function function, Duration duration) {
+    Timer? timer;
+    return () {
+      if (timer != null) {
+        timer!.cancel();
+      }
+      timer = Timer(duration, () => function());
+    };
   }
 
   // for playlist

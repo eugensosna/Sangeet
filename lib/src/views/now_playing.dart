@@ -8,7 +8,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:sangeet/src/controller/audio_controller.dart';
 import 'package:sangeet/src/views/splash_screen.dart';
 import 'package:sangeet/src/widgets/custom_button.dart';
-// import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class NowPlaying extends StatefulWidget {
   const NowPlaying({super.key});
@@ -19,12 +18,18 @@ class NowPlaying extends StatefulWidget {
 
 class _NowPlayingState extends State<NowPlaying> {
   final AudioController _con = Get.put(AudioController());
-  // final AdController _adCon = Get.put(AdController());
   Completer<void> audioCompletionCompleter = Completer<void>();
+  
+  debouncedRefresh() {
+    _con.debounce(() {
+      if (mounted) {
+        setState(() {});
+      }
+    }, const Duration(milliseconds: 500));
+  }
 
   @override
   void initState() {
-    // _adCon.loadBannerAd();
     super.initState();
 
     //Listen to audio duration
@@ -50,13 +55,12 @@ class _NowPlayingState extends State<NowPlaying> {
       if(_con.audioPlayer.state == PlayerState.completed) {
         if (!audioCompletionCompleter.isCompleted) { // Check if it's not completed
           audioCompletionCompleter.complete(); // Complete the custom future.
+          debugPrint('completed');
           _con.isShuffle
             ? _con.shuffledList()
             : _con.nextSong();
         }
-        if(mounted) {
-          setState(() { });
-        }
+        debouncedRefresh();
       }
     });
 
@@ -66,25 +70,6 @@ class _NowPlayingState extends State<NowPlaying> {
   // void dispose() {
   //   _con.audioPlayer.dispose();
   //   super.dispose();
-  // }
-
-  // loadAd() {
-  //   return Obx(() =>
-  //     _adCon.isAdLoaded.value == false
-  //       ? const SizedBox()
-  //       : _adCon.bannerAd == null
-  //         ? const SizedBox()
-  //         : Align(
-  //           alignment: Alignment.bottomCenter,
-  //           child: SafeArea(
-  //             child: SizedBox(
-  //               width: _adCon.bannerAd!.size.width.toDouble(),
-  //               height: _adCon.bannerAd!.size.height.toDouble(),
-  //               child: AdWidget(ad: _adCon.bannerAd!),
-  //             ),
-  //           ),
-  //         )
-  //   );
   // }
 
   @override
