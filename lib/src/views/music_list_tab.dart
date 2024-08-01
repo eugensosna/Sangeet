@@ -53,9 +53,7 @@ class _MusicListTabState extends State<MusicListTab>  with SingleTickerProviderS
       padding: const EdgeInsets.only(left: 16.0),
       isScrollable: true,
       labelColor: Colors.white,
-      // labelStyle: notoSans(greyShade3, 17.0, 0.0),
       unselectedLabelColor: Colors.grey,
-      // unselectedLabelStyle: notoSans(grey, 17.0, 0.0),
       indicatorColor: Theme.of(context).primaryColor,
       indicatorSize: TabBarIndicatorSize.label,
       indicatorWeight: 2.2,
@@ -112,7 +110,7 @@ class _MusicListTabState extends State<MusicListTab>  with SingleTickerProviderS
 
   nowPlayingSongSnippet() {
     return InkWell(
-      onTap: () => Get.to(() => const BottomNavigation()),
+      onTap: () => Get.to(() => const BottomNavigation(), preventDuplicates: false),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Obx(() =>

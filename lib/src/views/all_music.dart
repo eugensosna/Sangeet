@@ -63,7 +63,6 @@ class _AllMusicState extends State<AllMusic> {
               )
             ),
           onChanged: (val) {
-            // textFldCon.text = val;
             _con.searchSong(val);
           },
         ),
@@ -111,29 +110,8 @@ class _AllMusicState extends State<AllMusic> {
                     overflow: TextOverflow.ellipsis
                   ),
                 ),
-                // Row(
-                //   children: [
-                //     const Icon(
-                //       Icons.album,
-                //       size: 18
-                //     ),
-                //     SizedBox(
-                //       width: MediaQuery.of(context).size.width * 0.25,
-                //       child: Text(
-                //         ' ${_con.allSongs[index].album}',
-                //         overflow: TextOverflow.ellipsis
-                //       ),
-                //     ),
-                //   ],
-                // ),
               ],
             ),
-            // trailing: IconButton(
-            //   icon: const Icon(
-            //     Icons.more_vert
-            //   ),
-            //   onPressed: () => moreBottomSheet(index, _con.allSongs[index]),
-            // ),
             onTap: () {
               _con.currentPlayingList(_con.allSongs);
               _con.addToNowPlaying(index);
@@ -144,112 +122,5 @@ class _AllMusicState extends State<AllMusic> {
       }
     );
   }
-
-  // moreBottomSheet(index, item) {
-  //   return bottomSheet(
-  //     context, 
-  //     Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       mainAxisSize: MainAxisSize.min,
-  //       children: [
-  //         InkWell(
-  //           onTap: () {
-  //             Get.back();
-  //             // showPlaylistBottomSheet(item);
-  //           },
-  //           child: SizedBox(
-  //             width: double.infinity,
-  //             child: Row(
-  //               children: const [
-  //                 Icon(
-  //                   Icons.add,
-  //                   size: 30.0,
-  //                 ),
-  //                 SizedBox(width: 20.0),
-  //                 Text(
-  //                   'Add to Playlist',
-  //                   style: TextStyle(
-  //                     fontSize: 16.0
-  //                   ),
-  //                 )
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //         const SizedBox(height: 20.0),
-  //       ],
-  //     )
-  //   );
-  // }
-
-  // showPlaylistBottomSheet(item) {
-  //   return bottomSheet(
-  //     context, 
-  //     Column(
-  //       mainAxisSize: MainAxisSize.min,
-  //       children: [
-  //         const Center(
-  //           child: Text(
-  //             'Add to Playlist',
-  //             style: TextStyle(
-  //               fontSize: 20.0,
-  //               color: Colors.white,
-  //               fontWeight: FontWeight.bold
-  //             ),
-  //           ),
-  //         ),
-  //         const SizedBox(height: 20.0),
-  //         InkWell(
-  //           onTap: () {
-  //             Get.back();
-  //             addRenamePlaylist(context);
-  //             // showPlaylistBottomSheet(item);
-  //           },
-  //           child: SizedBox(
-  //             width: double.infinity,
-  //             child: Row(
-  //               children: const [
-  //                 Text(
-  //                   'Create New',
-  //                   style: TextStyle(
-  //                     fontSize: 16.0
-  //                   ),
-  //                 )
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //         const Divider(height: 25.0, color: Colors.grey),
-  //         ListView.separated(
-  //           itemCount: _con.playlist.length,
-  //           shrinkWrap: true,
-  //           separatorBuilder: (context, index) => const Divider(height: 25.0, color: Colors.grey),
-  //           itemBuilder: (context, index) {
-  //             return InkWell(
-  //               onTap: () {
-  //                 Get.back();
-  //                 _con.addToPlaylist(_con.playlist[index].id, item.id);
-  //               },
-  //               child: SizedBox(
-  //                 width: double.infinity,
-  //                 child: Row(
-  //                   children: [
-  //                     Text(
-  //                       _con.playlist[index].playlist,
-  //                       style: const TextStyle(
-  //                         fontSize: 16.0
-  //                       ),
-  //                     )
-  //                   ],
-  //                 ),
-  //               ),
-  //             );
-  //           }
-  //         ),
-  //         const SizedBox(height: 35.0)
-  //       ],
-  //     )
-  //   );
-  // }
 
 }
